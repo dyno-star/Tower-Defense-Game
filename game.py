@@ -85,23 +85,21 @@ class Game:
         self.soundButton = PlayPauseButton(sound_btn, sound_btn_off, 90, self.height - 85)
 
     def gen_enemies(self):
-        """
-        generate the next enemy or enemies to show
-        :return: enemy
-        """
-        if sum(self.current_wave) == 0:
-            if len(self.enemys) == 0:
-                self.wave += 1
-                self.current_wave = waves[self.wave]
-                self.pause = True
-                self.playPauseButton.paused = self.pause
+    if len(self.current_wave) == 0:
+        self.wave += 1
+        if self.wave < len(waves):
+            self.current_wave = waves[self.wave]
+            self.pause = True
+            self.playPauseButton.paused = self.pause
         else:
-            wave_enemies = [Scorpion(), Wizard(), Club(), Sword()]
-            for x in range(len(self.current_wave)):
-                if self.current_wave[x] != 0:
-                    self.enemys.append(wave_enemies[x])
-                    self.current_wave[x] = self.current_wave[x] - 1
-                    break
+            self.end_game()  # When all waves are complete, trigger the game over.
+    else:
+        wave_enemies = [Scorpion(), Wizard(), Club(), Sword()]
+        for i, count in enumerate(self.current_wave):
+            if count > 0:
+                self.enemys.append(wave_enemies[i])
+                self.current_wave[i] -= 1
+                break
 
     def run(self):
         pygame.mixer.music.play(loops=-1)
